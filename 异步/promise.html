@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const getJSON = function (url, method, data) {
+            const promise = new Promise(function (resolve, reject) {
+                const handler = function () {
+                    if (this.readyState !== 4) {
+                        return;
+                    }
+                    if (this.status >= 200 && this.status <= 400) {
+                        resolve(this.response)
+                    } else {
+                        reject(new Error(this.statusText))
+                    }
+                };
+                const res = new XMLHttpRequest();
+                if (method.toUpperCase() == 'GET') {
+                    url = data ? url + `&${data}` : url;
+                    res.open("GET", url);
+                    res.onreadystatechange = handler;
+                    res.responseType = 'json';
+                    res.setRequestHeader("Accept", "application/json");
+                    res.send();
+                } else if (method.toUpperCase() == 'POST') {
+                    data = data || null;
+                    res.open("POST", url);
+                    res.onreadystatechange = handler;
+                    res.responseType = 'json';
+                    res.setRequestHeader("Accept", "application/json");
+                    res.send(data);
+                }
+            })
+            return promise;
+        }
+        //.then
+        // getJSON('https://jsonplaceholder.typicode.com/todos/1', 'get').then(function (json) {
+        //     console.log('Contents' + JSON.stringify(json));
+        // }, function (error) {
+        //     console.log('出错啦', error);
+        // })
+        //async,await
+        async function getDataAsync(url, method, data) {
+            return await getJSON(url, method, data)
+        }
+        getDataAsync('https://jsonplaceholder.typicode.com/posts', 'post').then(function (json) {
+            console.log('Contents' + JSON.stringify(json));
+        }).catch(e => console.log(e))
+
+
+        // function timeout(ms) {
+        //     return new Promise(function (resolve) {
+        //         setTimeout(resolve, ms);
+        //     })
+        // }
+        // async function asyncPrint(value, ms) {
+        //     await timeout(ms);
+        //     console.log(value);
+        // }
+        // asyncPrint('Hello World', 5000)
+
+        // async function getJSON_f(req) {
+        //     let response = await fetch(req);
+        //     let data = await response.text();
+        //     return data;
+        // }
+        // let req = new Request('https://jsonplaceholder.typicode.com/todos/1', { method: "GET", cache: "reload" })
+        // getJSON_f(req).then(function (resolve) {
+        //     console.log(resolve);
+        // })
+
+
+    </script>
+    <!-- <script src="./moudle2.js" type="module"></script> -->
+</body>
+
+</html>
